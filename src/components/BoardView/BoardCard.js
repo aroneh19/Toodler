@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import {styles} from "./BoardStyle";
 
-const Board = ({ name, thumbnailPhoto, onEdit, onDelete }) => {
+const Board = ({ name, thumbnailPhoto, onEdit, onDelete, onPress }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,8 +10,8 @@ const Board = ({ name, thumbnailPhoto, onEdit, onDelete }) => {
     };
 
     return (
-        <View style={styles.boardCard}>
-            <Image source={{ uri: thumbnailPhoto }} style={styles.thumbnail} />
+      <TouchableOpacity onPress={onPress} style={styles.boardCard}>
+        <Image source={{ uri: thumbnailPhoto }} style={styles.thumbnail} />
             <Text style={styles.name}>{name}</Text>
 
             {/* Three-dot button */}
@@ -36,7 +36,7 @@ const Board = ({ name, thumbnailPhoto, onEdit, onDelete }) => {
                     </TouchableOpacity>
                 </View>
             )}
-        </View>
+        </TouchableOpacity>
     );
 };
 export default Board;

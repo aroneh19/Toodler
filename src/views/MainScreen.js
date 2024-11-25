@@ -6,24 +6,18 @@ import {AddBoardButton} from '../components/AddButton/AddButton';
 import {CustomModal} from "../components/Modal/Modal";
 
 import styles from './Styles/MainStyle';
-
-// Import the JSON data
-import initialData from '../../data/data.json';
+import { useAppContext } from '../context/AppContext';
 
 const DUMMY_PHOTO = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
 
 const MainScreen = ({ route, navigation }) => {
-    const { userName } = route.params;
-
-    const [boards, setBoards] = useState([]);
+    const { boards, addBoard } = useAppContext();
+    const { userName } = route.params || {};
+  
     const [isModalVisible, setModalVisible] = useState(false);
     const [editBoardId, setEditBoardId] = useState(null); // Track the board being edited
     const [newBoardName, setNewBoardName] = useState('');
     const [newBoardImage, setNewBoardImage] = useState('');
-
-    useEffect(() => {
-        setBoards(initialData.boards);
-    }, []);
 
     const handleAddBoard = () => {
         if (!newBoardName.trim()) { // Check if the name is empty or only whitespace
@@ -52,7 +46,7 @@ const MainScreen = ({ route, navigation }) => {
                 ? { ...board, name: newBoardName, thumbnailPhoto: newBoardImage || board.thumbnailPhoto }
                 : board
         );
-        setBoards(updatedBoards);
+        addBoard(newBoard);
         resetModal();
     };
 
@@ -86,7 +80,11 @@ const MainScreen = ({ route, navigation }) => {
                             setModalVisible(true);
                         }}
                         onDelete={() => handleDeleteBoard(item.id)}
+                        onPress={() => {
+                            navigation.navigate('BoardView', { boardId: item.id });
+                        }}
                     />
+
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
