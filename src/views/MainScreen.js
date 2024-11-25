@@ -17,6 +17,12 @@ const MainScreen = ({ route, navigation }) => {
     const [newBoardName, setNewBoardName] = useState('');
     const [newBoardImage, setNewBoardImage] = useState('');
 
+    const[lists, setLists] = useState([]);
+    [newListName, setNewList] = useState('');
+
+    const[tasks, setTasks] = useState([]);
+    [newTaskName, setNewTask] = useState('');
+
     useEffect(() => {
         setBoards(initialData.boards);
     }, []);
@@ -48,6 +54,7 @@ const MainScreen = ({ route, navigation }) => {
                     <Board
                         name={item.name}
                         thumbnailPhoto={item.thumbnailPhoto}
+                        onPress={() => navigation.navigate('BoardView', { boardId: item.id })}
                     />
                 )}
                 keyExtractor={(item) => item.id.toString()}
