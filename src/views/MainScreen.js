@@ -11,9 +11,9 @@ import { useAppContext } from '../context/AppContext';
 const DUMMY_PHOTO = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
 
 const MainScreen = ({ route, navigation }) => {
-    const { boards, addBoard } = useAppContext();
+    const { boards, addBoard, deleteBoard, setBoards } = useAppContext();
     const { userName } = route.params || {};
-  
+
     const [isModalVisible, setModalVisible] = useState(false);
     const [editBoardId, setEditBoardId] = useState(null); // Track the board being edited
     const [newBoardName, setNewBoardName] = useState('');
@@ -35,7 +35,7 @@ const MainScreen = ({ route, navigation }) => {
             thumbnailPhoto: newBoardImage || DUMMY_PHOTO,
         };
 
-        setBoards([...boards, newBoard]);
+        addBoard(newBoard);
         resetModal();
     };
 
@@ -46,12 +46,12 @@ const MainScreen = ({ route, navigation }) => {
                 ? { ...board, name: newBoardName, thumbnailPhoto: newBoardImage || board.thumbnailPhoto }
                 : board
         );
-        addBoard(newBoard);
+        setBoards(updatedBoards);
         resetModal();
     };
 
     const handleDeleteBoard = (boardId) => {
-        setBoards(boards.filter((board) => board.id !== boardId));
+        deleteBoard(boardId)
     };
 
     const resetModal = () => {
@@ -86,7 +86,7 @@ const MainScreen = ({ route, navigation }) => {
                     />
 
                 )}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item, index) => (item?.id ? item.id.toString() : index.toString())}
                 numColumns={2}
                 contentContainerStyle={styles.boardContainer}
             />
