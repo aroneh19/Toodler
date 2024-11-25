@@ -3,15 +3,18 @@ import {View, Text, FlatList, Modal, TextInput, TouchableOpacity, Alert } from '
 import Board from '../components/BoardView/BoardCard';
 import BackButton from '../components/BackButton/BackButton';
 import {AddBoardButton} from '../components/AddButton/AddButton';
+import {CustomModal} from "../components/Modal/Modal";
+
 import styles from './Styles/MainStyle';
 
 // Import the JSON data
 import initialData from '../../data/data.json';
 
+const DUMMY_PHOTO = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
+
 const MainScreen = ({ route, navigation }) => {
     const { userName } = route.params;
 
-    // State to manage boards
     const [boards, setBoards] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const [newBoardName, setNewBoardName] = useState('');
@@ -21,44 +24,50 @@ const MainScreen = ({ route, navigation }) => {
         setBoards(initialData.boards);
     }, []);
 
-    // Function to handle adding a new board
     const handleAddBoard = () => {
-        console.log(boards)
         const newBoardId = boards.length + 1;
         const newBoard = {
             id: newBoardId,
-            name: `New Board ${newBoardId}`,
-            thumbnailPhoto: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg",
+            name: newBoardName || `New Board ${newBoardId}`,
+            thumbnailPhoto: newBoardImage || DUMMY_PHOTO,
         };
 
-        setBoards([...boards, newBoard]); // Update the boards state
+        setBoards([...boards, newBoard]);
+        setModalVisible(false);
+        setNewBoardName('');
+        setNewBoardImage('');
     };
 
     return (
         <View style={styles.container}>
-            {/* Greeting */}
             <Text style={styles.greeting}>
                 Hi, <Text style={styles.userName}>{userName}</Text>!
             </Text>
 
-            {/* Boards */}
             <FlatList
                 data={boards}
                 renderItem={({ item }) => (
-                    <Board
-                        name={item.name}
-                        thumbnailPhoto={item.thumbnailPhoto}
-                    />
+                    <Board name={item.name} thumbnailPhoto={item.thumbnailPhoto} />
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 contentContainerStyle={styles.boardContainer}
             />
 
-            {/* Add Board Button */}
-            <AddBoardButton onPress={handleAddBoard} />
+            <AddBoardButton onPress={() => setModalVisible(true)} />
 
-            {/* Back Button */}
+            <CustomModal
+                visible={isModalVisible}
+                onClose={() => setModalVisible(false)}
+                onSave={handleAddBoard}
+                title="Add New Board"
+                inputs={[
+                    { placeholder: 'Board Name', value: newBoardName, setValue: setNewBoardName },
+                ]}
+                setInputs={[setNewBoardName]}
+                onImageSelected={setNewBoardImage}
+            />
+
             <BackButton onPress={() => navigation.goBack()} />
         </View>
     );
