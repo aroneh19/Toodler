@@ -17,6 +17,7 @@ const MainScreen = ({ route, navigation }) => {
 
     const [boards, setBoards] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [editBoardId, setEditBoardId] = useState(null); // Track the board being edited
     const [newBoardName, setNewBoardName] = useState('');
     const [newBoardImage, setNewBoardImage] = useState('');
 
@@ -25,6 +26,14 @@ const MainScreen = ({ route, navigation }) => {
     }, []);
 
     const handleAddBoard = () => {
+        if (!newBoardName.trim()) { // Check if the name is empty or only whitespace
+            Alert.alert("Error", "Board name is required!");
+            return;
+        }
+        if (!newBoardImage) { // Check if the name is empty or only whitespace
+            Alert.alert("Error", "A Photo is required!");
+            return;
+        }
         const newBoardId = boards.length + 1;
         const newBoard = {
             id: newBoardId,
@@ -33,7 +42,27 @@ const MainScreen = ({ route, navigation }) => {
         };
 
         setBoards([...boards, newBoard]);
+        resetModal();
+    };
+
+    const handleEditBoard = () => {
+        resetModal();
+        const updatedBoards = boards.map((board) =>
+            board.id === editBoardId
+                ? { ...board, name: newBoardName, thumbnailPhoto: newBoardImage || board.thumbnailPhoto }
+                : board
+        );
+        setBoards(updatedBoards);
+        resetModal();
+    };
+
+    const handleDeleteBoard = (boardId) => {
+        setBoards(boards.filter((board) => board.id !== boardId));
+    };
+
+    const resetModal = () => {
         setModalVisible(false);
+        setEditBoardId(null);
         setNewBoardName('');
         setNewBoardImage('');
     };
@@ -47,7 +76,17 @@ const MainScreen = ({ route, navigation }) => {
             <FlatList
                 data={boards}
                 renderItem={({ item }) => (
-                    <Board name={item.name} thumbnailPhoto={item.thumbnailPhoto} />
+                    <Board
+                        name={item.name}
+                        thumbnailPhoto={item.thumbnailPhoto}
+                        onEdit={() => {
+                            setEditBoardId(item.id);
+                            setNewBoardName(item.name);
+                            setNewBoardImage(item.thumbnailPhoto);
+                            setModalVisible(true);
+                        }}
+                        onDelete={() => handleDeleteBoard(item.id)}
+                    />
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
@@ -58,9 +97,9 @@ const MainScreen = ({ route, navigation }) => {
 
             <CustomModal
                 visible={isModalVisible}
-                onClose={() => setModalVisible(false)}
-                onSave={handleAddBoard}
-                title="Add New Board"
+                onClose={resetModal}
+                onSave={editBoardId ? handleEditBoard : handleAddBoard}
+                title={editBoardId ? "Edit Board" : "Add New Board"}
                 inputs={[
                     { placeholder: 'Board Name', value: newBoardName, setValue: setNewBoardName },
                 ]}
