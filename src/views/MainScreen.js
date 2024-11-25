@@ -3,38 +3,83 @@ import {View, Text, FlatList, Modal, TextInput, TouchableOpacity, Alert } from '
 import Board from '../components/BoardView/BoardCard';
 import BackButton from '../components/BackButton/BackButton';
 import {AddBoardButton} from '../components/AddButton/AddButton';
+import {CustomModal} from "../components/Modal/Modal";
+
 import styles from './Styles/MainStyle';
 import { useAppContext } from '../context/AppContext';
+
+const DUMMY_PHOTO = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
 
 const MainScreen = ({ route, navigation }) => {
     const { boards, addBoard } = useAppContext();
     const { userName } = route.params || {};
+  
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [editBoardId, setEditBoardId] = useState(null); // Track the board being edited
+    const [newBoardName, setNewBoardName] = useState('');
+    const [newBoardImage, setNewBoardImage] = useState('');
 
-    // Function to handle adding a new board
     const handleAddBoard = () => {
-        console.log(boards)
+        if (!newBoardName.trim()) { // Check if the name is empty or only whitespace
+            Alert.alert("Error", "Board name is required!");
+            return;
+        }
+        if (!newBoardImage) { // Check if the name is empty or only whitespace
+            Alert.alert("Error", "A Photo is required!");
+            return;
+        }
+        const newBoardId = boards.length + 1;
         const newBoard = {
-            id: newBoardId + 1,
-            name: `New Board ${newBoardId}`,
-            thumbnailPhoto: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg",
+            id: newBoardId,
+            name: newBoardName || `New Board ${newBoardId}`,
+            thumbnailPhoto: newBoardImage || DUMMY_PHOTO,
         };
+
+        setBoards([...boards, newBoard]);
+        resetModal();
+    };
+
+    const handleEditBoard = () => {
+        resetModal();
+        const updatedBoards = boards.map((board) =>
+            board.id === editBoardId
+                ? { ...board, name: newBoardName, thumbnailPhoto: newBoardImage || board.thumbnailPhoto }
+                : board
+        );
         addBoard(newBoard);
+        resetModal();
+    };
+
+    const handleDeleteBoard = (boardId) => {
+        setBoards(boards.filter((board) => board.id !== boardId));
+    };
+
+    const resetModal = () => {
+        setModalVisible(false);
+        setEditBoardId(null);
+        setNewBoardName('');
+        setNewBoardImage('');
     };
 
     return (
         <View style={styles.container}>
-            {/* Greeting */}
             <Text style={styles.greeting}>
                 Hi, <Text style={styles.userName}>{userName}</Text>!
             </Text>
 
-            {/* Boards */}
             <FlatList
                 data={boards}
                 renderItem={({ item }) => (
                     <Board
                         name={item.name}
                         thumbnailPhoto={item.thumbnailPhoto}
+                        onEdit={() => {
+                            setEditBoardId(item.id);
+                            setNewBoardName(item.name);
+                            setNewBoardImage(item.thumbnailPhoto);
+                            setModalVisible(true);
+                        }}
+                        onDelete={() => handleDeleteBoard(item.id)}
                         onPress={() => {
                             navigation.navigate('BoardView', { boardId: item.id });
                         }}
@@ -46,10 +91,20 @@ const MainScreen = ({ route, navigation }) => {
                 contentContainerStyle={styles.boardContainer}
             />
 
-            {/* Add Board Button */}
-            <AddBoardButton onPress={handleAddBoard} />
+            <AddBoardButton onPress={() => setModalVisible(true)} />
 
-            {/* Back Button */}
+            <CustomModal
+                visible={isModalVisible}
+                onClose={resetModal}
+                onSave={editBoardId ? handleEditBoard : handleAddBoard}
+                title={editBoardId ? "Edit Board" : "Add New Board"}
+                inputs={[
+                    { placeholder: 'Board Name', value: newBoardName, setValue: setNewBoardName },
+                ]}
+                setInputs={[setNewBoardName]}
+                onImageSelected={setNewBoardImage}
+            />
+
             <BackButton onPress={() => navigation.goBack()} />
         </View>
     );
