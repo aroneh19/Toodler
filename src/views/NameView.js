@@ -8,7 +8,7 @@ const NameInputView = ({ navigation }) => {
 
 	const handleContinue = () => {
 		if (name.trim()) {
-			navigation.navigate("Main", { userName: name }); // Pass the name to MainView
+			navigation.navigate("BoardView", { userName: name }); // Pass the name to BoardView
 		} else {
 			alert("Please enter your name");
 		}
