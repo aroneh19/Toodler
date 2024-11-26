@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./ListStyle";
 
-const List = ({ name, color, onEdit, onDelete }) => {
+const List = ({ name, color, onEdit, onDelete, onPress }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,6 +10,7 @@ const List = ({ name, color, onEdit, onDelete }) => {
     };
 
     return (
+        <TouchableOpacity onPress={onPress} style={styles.listCard}>
         <View style={styles.listCard}>
             {/* Color dot */}
             <View style={[styles.colorDot, { backgroundColor: color }]} />
@@ -40,6 +41,7 @@ const List = ({ name, color, onEdit, onDelete }) => {
                 </View>
             )}
         </View>
+        </TouchableOpacity>
     );
 };
 

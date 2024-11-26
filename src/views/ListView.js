@@ -26,7 +26,8 @@ const ListView = ({ route, navigation }) => {
 
 	const boardLists = lists.filter((list) => list.boardId === board.id);
 	const listIds = boardLists.map((list) => list.id);
-	const boardTasks = tasks.filter((task) => listIds.includes(task.listId));
+	const listTasks = tasks.filter((task) => listIds.id.includes(task.listId));
+	console.log(listTasks);
 
 	const handleAddList = () => {
 		if (!newListName.trim()) {
