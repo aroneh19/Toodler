@@ -4,12 +4,9 @@ export const styles = StyleSheet.create({
     listCard: {
         flex: 1,
         margin: 10,
-        padding: 10,
+        padding: 5,
         backgroundColor: '#fff',
         borderRadius: 8,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
         alignSelf: 'stretch',
     },
     row: {
@@ -25,18 +22,18 @@ export const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     colorDot: {
-        width: 20,
-        height: 20,
+        width: 30,
+        height: 30,
         borderRadius: 100,
         marginRight: 20,
     },
     name: {
-        fontSize: 16,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#000',
     },
     dropdownButtonText: {
-        fontSize: 20,
+        fontSize: 40,
         color: '#000',
     },
 });

@@ -83,6 +83,16 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
+    // Add this to your styles
+    taskContainer: {
+        paddingLeft: 20,
+        paddingTop: 10,
+    },
+    taskText: {
+        fontSize: 14,
+        color: "#555",
+    },
+  
 });
 
 export default styles;
