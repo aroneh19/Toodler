@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, FlatList, Modal, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {View, Text, FlatList, Modal, TextInput, Alert } from 'react-native';
 import Board from '../components/BoardView/BoardCard';
 import BackButton from '../components/BackButton/BackButton';
 import {AddBoardButton} from '../components/AddButton/AddButton';
@@ -81,7 +81,7 @@ const MainScreen = ({ route, navigation }) => {
                         }}
                         onDelete={() => handleDeleteBoard(item.id)}
                         onPress={() => {
-                            navigation.navigate('BoardView', { boardId: item.id });
+                            navigation.navigate('BoardView', { board: item });
                         }}
                     />
 
