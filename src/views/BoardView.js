@@ -43,6 +43,16 @@ const BoardView = ({ route, navigation }) => {
 	};
 
 	const handleEditBoard = () => {
+		if (!newBoardName.trim()) {
+			// Check if the name is empty or only whitespace
+			Alert.alert("Error", "Board name is required!");
+			return;
+		}
+		if (!newBoardImage) {
+			// Check if the name is empty or only whitespace
+			Alert.alert("Error", "A Photo is required!");
+			return;
+		}
 		resetModal();
 		const updatedBoards = boards.map((board) =>
 			board.id === editBoardId
