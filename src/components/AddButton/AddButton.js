@@ -9,3 +9,19 @@ export const AddBoardButton = ({ onPress }) => {
         </TouchableOpacity>
     );
 };
+
+export const AddListButton = ({ onPress }) => {
+    return (
+        <TouchableOpacity style={styles.button} onPress={onPress}>
+            <Text style={styles.buttonText}>+ Add List</Text>
+        </TouchableOpacity>
+    );
+};
+
+export const AddTaskButton = ({ onPress }) => {
+    return (
+        <TouchableOpacity style={styles.button} onPress={onPress}>
+            <Text style={styles.buttonText}>+ Add Task</Text>
+        </TouchableOpacity>
+    );
+};
