@@ -36,4 +36,18 @@ export const styles = StyleSheet.create({
         fontSize: 40,
         color: '#000',
     },
+    expandedListCard: {
+        padding: 10,
+        backgroundColor: '#f0f0f0',
+      },
+      expandedContent: {
+        marginTop: 10,
+        padding: 10,
+        backgroundColor: '#e6e6e6',
+        borderRadius: 8,
+      },
+      expandedText: {
+        fontSize: 16,
+        color: '#555',
+      },      
 });

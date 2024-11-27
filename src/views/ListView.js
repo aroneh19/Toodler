@@ -103,6 +103,7 @@ const ListView = ({ route, navigation }) => {
               }}
               onPress={() => toggleExpandList(item.id)} // Toggle list expand/collapse
               expanded={expandedListId === item.id} // Pass expanded state to List
+			  isExpanded={expandedListId === item.id}
             />
             {expandedListId === item.id && (
               <View style={styles.expandedContent}>
