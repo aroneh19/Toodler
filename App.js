@@ -5,7 +5,6 @@ import NameInputView from "./src/views/NameView"; // Screen for entering the nam
 import BoardView from "./src/views/BoardView"; // Main screen of the app
 import ListView from "./src/views/ListView"; // Screen to display the board
 import { AppProvider } from "./src/context/AppContext"; // App context provider
-import TaskView from "./src/views/TaskView"; // Screen to display the list
 
 const Stack = createStackNavigator();
 
@@ -20,8 +19,6 @@ const App = () => {
 					<Stack.Screen name="BoardView" component={BoardView} />
 					{/* Board screen to display list in Board */}
 					<Stack.Screen name="ListView" component={ListView} />
-
-					<Stack.Screen name="TaskView" component={TaskView} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</AppProvider>

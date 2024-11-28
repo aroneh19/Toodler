@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./ListStyle";
+import Task from "../Task/TaskCard"; // Adjust import path if needed
 
-const List = ({ name, color, onEdit, onDelete }) => {
+const List = ({ name, color, onEdit, onDelete, onPress, isExpanded, tasks }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,36 +11,48 @@ const List = ({ name, color, onEdit, onDelete }) => {
     };
 
     return (
-        <View style={styles.listCard}>
-            {/* Color dot */}
-            <View style={[styles.colorDot, { backgroundColor: color }]} />
+        <TouchableOpacity
+            onPress={onPress}
+            style={[styles.listCard, isExpanded ? styles.expandedListCard : {}]}
+        >
+            <View style={styles.row}>
+                <View style={styles.leftSection}>
+                    <View style={[styles.colorDot, { backgroundColor: color }]} />
+                    <Text style={styles.name}>{name}</Text>
+                </View>
+                <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
+                    <Text style={styles.dropdownButtonText}>⋮</Text>
+                </TouchableOpacity>
+            </View>
 
-            {/* List name */}
-            <Text style={styles.name}>{name}</Text>
-
-            {/* Three-dot button */}
-            <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-                <Text style={styles.dropdownButtonText}>⋮</Text>
-            </TouchableOpacity>
-
-            {/* Dropdown menu */}
             {dropdownVisible && (
                 <View style={styles.dropdownMenu}>
-                    <TouchableOpacity style={styles.dropdownItem} onPress={() => {
-                        toggleDropdown();
-                        onEdit();
-                    }}>
+                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onEdit(); }}>
                         <Text style={styles.dropdownItemText}>Edit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.dropdownItem} onPress={() => {
-                        toggleDropdown();
-                        onDelete();
-                    }}>
+                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onDelete(); }}>
                         <Text style={styles.dropdownItemText}>Delete</Text>
                     </TouchableOpacity>
                 </View>
             )}
-        </View>
+
+            {isExpanded && (
+                <View style={styles.expandedContent}>
+                    {tasks.length > 0 ? (
+                        tasks.map((task) => (
+                            <Task
+                                key={task.id}
+                                name={task.name}
+                                description={task.description}
+                                done={task.isFinished}
+                            />
+                        ))
+                    ) : (
+                        <Text style={styles.expandedText}>No tasks available</Text>
+                    )}
+                </View>
+            )}
+        </TouchableOpacity>
     );
 };
 
