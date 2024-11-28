@@ -88,7 +88,8 @@ const BoardView = ({ route, navigation }) => {
 						}}
 						onDelete={() => handleDeleteBoard(item.id)}
 						onPress={() => {
-							navigation.navigate("ListView", { board: item });
+							console.log("The board Id chosen " + item.id)
+							navigation.navigate("ListView", { board: item});
 						}}
 					/>
 				)}

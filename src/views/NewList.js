@@ -1,5 +1,5 @@
-import React from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import React, { useState, useCallback } from "react";
+import {View, StyleSheet, ScrollView} from "react-native";
 import { useAppContext } from "../context/AppContext";
 import List from "../components/NewDND/ListC";
 
@@ -7,16 +7,31 @@ const NewList = ({ route }) => {
     const { boardId } = route.params;
     const { lists } = useAppContext();
 
+    const [isDrag, setDrag] = useState(false);
+    const [listLayouts, setListLayouts] = useState({});
+
+    const handleDragStart = () => {
+        setDrag(true);
+    };
+
+    const handleDragEnd = () => {
+        setDrag(false);
+    };
+
     // Filter lists for the given boardId
     const filteredLists = lists.filter((list) => list.boardId === boardId);
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={filteredLists}
-                renderItem={({ item }) => <List list={item} />}
-                keyExtractor={(item) => item.id.toString()}
-            />
+        <View style={styles.container}
+        disableScrollViewPanResponder={false}>
+            {filteredLists.map((list) => (
+                <List
+                    key={list.id}
+                    list={list}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                />
+            ))}
         </View>
     );
 };
@@ -24,10 +39,9 @@ const NewList = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f0f0f5", // Slightly off-white for a softer feel
-        paddingVertical: 40, // Add vertical padding
+        backgroundColor: "#f0f0f5",
+        paddingVertical: 40,
     },
 });
-
 
 export default NewList;

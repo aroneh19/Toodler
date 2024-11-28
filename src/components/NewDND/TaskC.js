@@ -1,32 +1,93 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder } from "react-native";
+import { useAppContext } from "../../context/AppContext";
 
-const Task = ({ task }) => {
-    const handleMarkAsDone = () => {
-        // Implement task completion logic (from context or passed as prop)
-        console.log(`Marking task "${task.name}" as done!`);
-    };
+const Task = ({ task, onDragEnd, onDragStart }) => {
+    const position = useRef(new Animated.ValueXY()).current;
+    const [dragging, setDragging] = useState(false);
+    const { setTasks, tasks, layouts } = useAppContext();
 
-    const handleEditTask = () => {
-        // Implement task editing logic (from context or passed as prop)
-        console.log(`Editing task "${task.name}"`);
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderGrant: () => {
+                onDragStart(task.id);
+                setDragging(true);
+            },
+            onPanResponderMove: Animated.event(
+                [
+                    null,
+                    {
+                        dx: position.x,
+                        dy: position.y,
+                    },
+                ],
+                { useNativeDriver: false }
+            ),
+            onPanResponderRelease: (evt, gestureState) => {
+                const { moveX, moveY } = gestureState;
+
+                const targetLayout = layouts.find(
+                    (layout) =>
+                        moveX > layout.x &&
+                        moveX < layout.x + layout.width &&
+                        moveY > layout.y &&
+                        moveY < layout.y + layout.height
+                );
+
+                if (targetLayout) {
+                    updateTaskListId(task.id, targetLayout.id);
+                } else {
+                    console.log("Dropped outside any valid layout");
+                }
+
+                onDragEnd();
+
+                Animated.spring(position, {
+                    toValue: { x: 0, y: 0 },
+                    useNativeDriver: false,
+                }).start();
+
+                setDragging(false);
+            },
+        })
+    ).current;
+
+    const updateTaskListId = (taskId, newListId) => {
+        const updatedTasks = tasks.map((task) =>
+            task.id === taskId ? { ...task, listId: newListId } : task
+        );
+        setTasks(updatedTasks);
     };
 
     return (
-        <View style={styles.taskContainer}>
+        <Animated.View
+            style={[
+                styles.taskContainer,
+                {
+                    transform: position.getTranslateTransform(),
+                    opacity: dragging ? 0.8 : 1,
+                    zIndex: dragging ? 999 : 1,
+                    elevation: dragging ? 100 : 4,
+                    position: dragging ? 'absolute' : 'relative',
+                },
+            ]}
+            {...panResponder.panHandlers}
+        >
             <View style={styles.taskInfo}>
                 <Text style={styles.taskName}>{task.name}</Text>
                 <Text style={styles.taskDescription}>{task.description}</Text>
             </View>
             <View style={styles.taskActions}>
-                <TouchableOpacity onPress={handleMarkAsDone} style={styles.doneButton}>
+                <TouchableOpacity onPress={() => console.log("Mark as Done")} style={styles.doneButton}>
                     <Text style={styles.doneButtonText}>Done</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleEditTask} style={styles.editButton}>
+                <TouchableOpacity onPress={() => console.log("Edit Task")} style={styles.editButton}>
                     <Text style={styles.editButtonText}>Edit</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </Animated.View>
     );
 };
 
@@ -35,9 +96,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: 15, // Adjust padding for better spacing
-        marginVertical: 8, // Consistent spacing between tasks
-        marginHorizontal: 16, // Add horizontal margin
+        padding: 15,
+        marginVertical: 8,
+        marginHorizontal: 16,
         backgroundColor: "#fff",
         borderRadius: 8,
         shadowColor: "#000",
@@ -66,7 +127,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         backgroundColor: "#4CAF50",
-        borderRadius: 8, // Rounded corners for modern look
+        borderRadius: 8,
     },
     doneButtonText: {
         color: "#fff",
@@ -83,6 +144,5 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
 });
-
 
 export default Task;
