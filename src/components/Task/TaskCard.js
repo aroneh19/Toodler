@@ -2,18 +2,39 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./TaskStyle";
 
-const Task = ({ name, description, isFinished, onPress }) => {
+const Task = ({ name, description, isFinished, onPress, onDelete, onEdit }) => {
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    const toggleDropdown = () => {
+        setDropdownVisible(!dropdownVisible);
+    };
     
     return (
         <TouchableOpacity onPress={onPress} style={styles.taskCard}>
-            <View style={styles.row}>
+            <View style={styles.leftSection}>
                 {/* If the task is done or not */}
-                <Text style={styles.isFinished}>{isFinished}</Text>
-                {/* Name */}
-                <Text style={styles.name}>{name}</Text>
-                {/* Description */}
-                <Text style={styles.name}>{description}</Text>
+                <View style={[styles.colorDot, { backgroundColor: isFinished ? '#4caf50' : '#f44336' }]} />
+                {/* Task name and description */}
+                <View style={{ flexDirection: 'column', flexShrink: 1 }}>
+                    <Text style={styles.name}>{name}</Text>
+                    <Text style={styles.description}>{description}</Text>
+                </View>
             </View>
+            <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
+                <Text style={styles.dropdownButtonText}>⋮</Text>
+            </TouchableOpacity>
+
+            {/* Dropdown menu */}
+            {dropdownVisible && (
+                <View style={styles.dropdownMenu}>
+                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onEdit(); }}>
+                        <Text style={styles.dropdownItemText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onDelete(); }}>
+                        <Text style={styles.dropdownItemText}>Delete</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </TouchableOpacity>
     );
 };

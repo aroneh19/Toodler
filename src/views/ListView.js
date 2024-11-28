@@ -16,7 +16,7 @@ import BackButton from "../components/BackButton/BackButton";
 import colors from '../styles/Colors';
 
 const ListView = ({ route, navigation }) => {
-  const { lists = [], tasks = [], addList, deleteList, setLists } = useAppContext();
+  const { lists = [], tasks = [], addList, addTask, deleteList, deleteTask, setLists } = useAppContext();
   const { board } = route.params;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -68,6 +68,10 @@ const ListView = ({ route, navigation }) => {
     deleteList(listId);
   };
 
+  const handleDeleteTask = (taskId) => {
+    deleteTask(taskId); // Use deleteTask from context
+  };
+
   const toggleExpandList = (listId) => {
     setExpandedListId(expandedListId === listId ? null : listId);
   };
@@ -91,20 +95,19 @@ const ListView = ({ route, navigation }) => {
               return (
                   <View>
                       <List
-                          name={item.name}
-                          color={item.color}
-                          onEdit={() => {
-                              setEditListId(item.id);
-                              setNewListName(item.name);
-                              setNewListColor(item.color);
-                              setModalVisible(true);
-                          }}
-                          onDelete={() => {
-                              handleDeleteList(item.id);
-                          }}
-                          onPress={() => toggleExpandList(item.id)}
-                          isExpanded={expandedListId === item.id}
-                          tasks={filteredTasks} // Pass tasks here
+                        name={item.name}
+                        color={item.color}
+                        onEdit={() => {
+                            setEditListId(item.id);
+                            setNewListName(item.name);
+                            setNewListColor(item.color);
+                            setModalVisible(true);
+                        }}
+                        onDelete={() => handleDeleteList(item.id)}
+                        onPress={() => toggleExpandList(item.id)}
+                        isExpanded={expandedListId === item.id}
+                        tasks={filteredTasks} // Pass tasks here
+                        onDeleteTask={handleDeleteTask}
                       />
                   </View>
               );
