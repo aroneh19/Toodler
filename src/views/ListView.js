@@ -14,7 +14,6 @@ import List from "../components/Lists/ListCard";
 import { AddListButton } from "../components/AddButton/AddButton";
 import BackButton from "../components/BackButton/BackButton";
 import colors from '../styles/Colors';
-import Task from "../components/Task/TaskCard"; // Import Task component
 
 const ListView = ({ route, navigation }) => {
   const { lists = [], tasks = [], addList, deleteList, setLists } = useAppContext();
@@ -86,47 +85,35 @@ const ListView = ({ route, navigation }) => {
         <Text>{board.name}</Text>
       </Text>
       <FlatList
-        data={boardLists}
-        renderItem={({ item }) => (
-          <View>
-            <List
-              name={item.name}
-              color={item.color}
-              onEdit={() => {
-                setEditListId(item.id);
-                setNewListName(item.name);
-                setNewListColor(item.color);
-                setModalVisible(true);
-              }}
-              onDelete={() => {
-                handleDeleteList(item.id);
-              }}
-              onPress={() => toggleExpandList(item.id)} // Toggle list expand/collapse
-              expanded={expandedListId === item.id} // Pass expanded state to List
-			  isExpanded={expandedListId === item.id}
-            />
-            {expandedListId === item.id && (
-              <View style={styles.expandedContent}>
-                {/* Render tasks for the expanded list */}
-                {listTasks
-                  .filter((task) => task.listId === item.id)
-                  .map((task) => (
-                    <Task
-                      key={task.id}
-                      name={task.name}
-                      description={task.description}
-                      done={task.isFinished} // Boolean
-                    />
-                  ))}
-              </View>
-            )}
-          </View>
-        )}
-        keyExtractor={(item, index) =>
-          item?.id ? item.id.toString() : index.toString()
-        }
-        numColumns={1}
-        contentContainerStyle={styles.boardContainer}
+          data={boardLists}
+          renderItem={({ item }) => {
+              const filteredTasks = listTasks.filter((task) => task.listId === item.id);
+              return (
+                  <View>
+                      <List
+                          name={item.name}
+                          color={item.color}
+                          onEdit={() => {
+                              setEditListId(item.id);
+                              setNewListName(item.name);
+                              setNewListColor(item.color);
+                              setModalVisible(true);
+                          }}
+                          onDelete={() => {
+                              handleDeleteList(item.id);
+                          }}
+                          onPress={() => toggleExpandList(item.id)}
+                          isExpanded={expandedListId === item.id}
+                          tasks={filteredTasks} // Pass tasks here
+                      />
+                  </View>
+              );
+          }}
+          keyExtractor={(item, index) =>
+              item?.id ? item.id.toString() : index.toString()
+          }
+          numColumns={1}
+          contentContainerStyle={styles.boardContainer}
       />
       <AddListButton onPress={() => setModalVisible(true)} />
       <BackButton onPress={() => navigation.goBack()} />
