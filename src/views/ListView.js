@@ -11,12 +11,12 @@ import {
 import { useAppContext } from "../context/AppContext";
 import styles from "./Styles/MainStyle";
 import List from "../components/Lists/ListCard";
-import { AddListButton } from "../components/AddButton/AddButton";
+import { AddListButton, AddTaskButton } from "../components/AddButton/AddButton";
 import BackButton from "../components/BackButton/BackButton";
 import colors from '../styles/Colors';
 
 const ListView = ({ route, navigation }) => {
-  const { lists = [], tasks = [], addList, deleteList, setLists } = useAppContext();
+  const { lists = [], tasks = [], addList, addTask, deleteList, deleteTask, setLists, setTasks } = useAppContext();
   const { board } = route.params;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,6 +25,12 @@ const ListView = ({ route, navigation }) => {
   const [newListColor, setNewListColor] = useState(colors[0]);
 
   const [expandedListId, setExpandedListId] = useState(null); // Track the expanded list
+
+  const[taskModalVisible, setTaskModalVisible] = useState(false);
+  const [editTaskId, setEditTaskId] = useState(null);
+  const [newTaskName, setNewTaskName] = useState("");
+  const [newTaskDescription, setNewTaskDescription] = useState("");
+  const [newTaskIsFinished, setNewTaskIsFinished] = useState(false);
 
   const boardLists = lists.filter((list) => list.boardId === board.id);
   const listIds = boardLists.map((list) => list.id);
@@ -68,6 +74,49 @@ const ListView = ({ route, navigation }) => {
     deleteList(listId);
   };
 
+  const handleAddTask = () => {
+    if (!newTaskName.trim()) {
+      Alert.alert("Error", "Task name is required!");
+      return;
+    }
+    if (!newTaskDescription.trim()) {
+      Alert.alert("Error", "Task description is required!");
+      return;
+    }
+    const newTask = {
+      id: tasks.length + 1,
+      name: newTaskName,
+      description: newTaskDescription,
+      isFinished: newTaskIsFinished,
+      listId: expandedListId,
+    };
+    addTask(newTask);
+    resetModal();
+  };
+
+  const handleEditTask = () => {
+    if (!newTaskName.trim()) {
+      Alert.alert("Error", "Task name is required!");
+      return;
+    }
+    const updatedTasks = tasks.map((task) =>
+      task.id === editTaskId
+        ? {
+            ...task,
+            name: newTaskName,
+            description: newTaskDescription,
+            isFinished: newTaskIsFinished,
+          }
+        : task
+    );
+    setTasks(updatedTasks);
+    resetModal(); // Clear the modal fields
+  };
+
+  const handleDeleteTask = (taskId) => {
+    deleteTask(taskId); // Use deleteTask from context
+  };
+
   const toggleExpandList = (listId) => {
     setExpandedListId(expandedListId === listId ? null : listId);
   };
@@ -77,7 +126,13 @@ const ListView = ({ route, navigation }) => {
     setEditListId(null);
     setNewListName("");
     setNewListColor(colors[0]);
-  };
+
+    setTaskModalVisible(false);
+    setEditTaskId(null);
+    setNewTaskName("");
+    setNewTaskDescription("");
+    setNewTaskIsFinished(false);
+    };
 
   return (
     <View style={styles.container}>
@@ -91,20 +146,27 @@ const ListView = ({ route, navigation }) => {
               return (
                   <View>
                       <List
-                          name={item.name}
-                          color={item.color}
-                          onEdit={() => {
-                              setEditListId(item.id);
-                              setNewListName(item.name);
-                              setNewListColor(item.color);
-                              setModalVisible(true);
-                          }}
-                          onDelete={() => {
-                              handleDeleteList(item.id);
-                          }}
-                          onPress={() => toggleExpandList(item.id)}
-                          isExpanded={expandedListId === item.id}
-                          tasks={filteredTasks} // Pass tasks here
+                        name={item.name}
+                        color={item.color}
+                        onEdit={() => {
+                            setEditListId(item.id);
+                            setNewListName(item.name);
+                            setNewListColor(item.color);
+                            setModalVisible(true);
+                        }}
+                        onDelete={() => handleDeleteList(item.id)}
+                        onPress={() => toggleExpandList(item.id)}
+                        isExpanded={expandedListId === item.id}
+                        tasks={filteredTasks} // Pass tasks here
+                        onDeleteTask={handleDeleteTask}
+                        onEditTask={(task) => {
+                          console.log(task)
+                          setEditTaskId(task.id);
+                          setNewTaskName(task.name);
+                          setNewTaskDescription(task.description);
+                          setNewTaskIsFinished(task.isFinished);
+                          setTaskModalVisible(true);
+                        }}
                       />
                   </View>
               );
@@ -115,10 +177,18 @@ const ListView = ({ route, navigation }) => {
           numColumns={1}
           contentContainerStyle={styles.boardContainer}
       />
-      <AddListButton onPress={() => setModalVisible(true)} />
+      {/* Conditionally Render the Button */}
+      {expandedListId ? (
+        <AddTaskButton
+          onPress={() => {setTaskModalVisible(true)}}
+        />
+      ) : (
+        <AddListButton onPress={() => setModalVisible(true)} />
+      )}
+
       <BackButton onPress={() => navigation.goBack()} />
 
-      {/* Modal for Adding List */}
+      {/* Modal for Adding/Editing List */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -171,6 +241,60 @@ const ListView = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Modal for Adding/Editing Tasks */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={taskModalVisible}
+        onRequestClose={resetModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
+              {editTaskId ? "Edit Task" : "Add New Task"}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Task Name"
+              value={newTaskName}
+              onChangeText={setNewTaskName}
+              autoFocus={true}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Task Description"
+              value={newTaskDescription}
+              onChangeText={setNewTaskDescription}
+            />
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => setNewTaskIsFinished(!newTaskIsFinished)}
+            >
+              <Text style={styles.checkboxLabel}>
+                {newTaskIsFinished ? "✔️ Task is finished" : "❌ Task not finished"}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={editTaskId ? handleEditTask : handleAddTask}
+              >
+                <Text style={styles.buttonText}>
+                  {editTaskId ? "Save" : "Add"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={resetModal}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 };
