@@ -31,6 +31,8 @@ const ListView = ({ route, navigation }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskIsFinished, setNewTaskIsFinished] = useState(false);
+  const [transferModalVisible, setTransferModalVisible] = useState(false);
+  const [taskToTransfer, setTaskToTransfer] = useState(null);
 
   const boardLists = lists.filter((list) => list.boardId === board.id);
   const listIds = boardLists.map((list) => list.id);
@@ -121,6 +123,18 @@ const ListView = ({ route, navigation }) => {
     setExpandedListId(expandedListId === listId ? null : listId);
   };
 
+  const handleTransferTask = (destinationListId) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskToTransfer.id
+        ? { ...task, listId: destinationListId }
+        : task
+    );
+    setTasks(updatedTasks);
+    setTransferModalVisible(false);
+    setTaskToTransfer(null);
+  };
+  
+
   const resetModal = () => {
     setModalVisible(false);
     setEditListId(null);
@@ -160,12 +174,16 @@ const ListView = ({ route, navigation }) => {
                         tasks={filteredTasks} // Pass tasks here
                         onDeleteTask={handleDeleteTask}
                         onEditTask={(task) => {
-                          console.log(task)
+                          console.log(boardLists);
                           setEditTaskId(task.id);
                           setNewTaskName(task.name);
                           setNewTaskDescription(task.description);
                           setNewTaskIsFinished(task.isFinished);
                           setTaskModalVisible(true);
+                        }}
+                        onTransferTask={(task) => {
+                          setTaskToTransfer(task);
+                          setTransferModalVisible(true);
                         }}
                       />
                   </View>
@@ -187,6 +205,39 @@ const ListView = ({ route, navigation }) => {
       )}
 
       <BackButton onPress={() => navigation.goBack()} />
+
+      {/* Modal for Transfering Task to Another List */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={transferModalVisible}
+        onRequestClose={() => setTransferModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Transfer Task</Text>
+            <FlatList
+              data={boardLists}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.listOption}
+                  onPress={() => handleTransferTask(item.id)}
+                >
+                  <Text style={styles.listText}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => setTransferModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
 
       {/* Modal for Adding/Editing List */}
       <Modal
@@ -254,19 +305,24 @@ const ListView = ({ route, navigation }) => {
             <Text style={styles.modalTitle}>
               {editTaskId ? "Edit Task" : "Add New Task"}
             </Text>
+            
+            {/* Task Name Input */}
             <TextInput
               style={styles.input}
               placeholder="Task Name"
               value={newTaskName}
               onChangeText={setNewTaskName}
-              autoFocus={true}
             />
+            
+            {/* Task Description Input */}
             <TextInput
               style={styles.input}
               placeholder="Task Description"
               value={newTaskDescription}
               onChangeText={setNewTaskDescription}
             />
+            
+            {/* Task Status (isFinished) Selector */}
             <TouchableOpacity
               style={styles.checkboxContainer}
               onPress={() => setNewTaskIsFinished(!newTaskIsFinished)}
@@ -275,15 +331,18 @@ const ListView = ({ route, navigation }) => {
                 {newTaskIsFinished ? "✔️ Task is finished" : "❌ Task not finished"}
               </Text>
             </TouchableOpacity>
+          
+            {/* Modal Buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={editTaskId ? handleEditTask : handleAddTask}
               >
                 <Text style={styles.buttonText}>
-                  {editTaskId ? "Save" : "Add"}
+                  {editTaskId ? "Save Task" : "Add Task"}
                 </Text>
               </TouchableOpacity>
+              
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}
                 onPress={resetModal}
@@ -294,6 +353,7 @@ const ListView = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+
 
     </View>
   );
