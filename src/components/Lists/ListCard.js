@@ -47,6 +47,7 @@ const List = ({ name, color, onEdit, onEditTask, onDelete, onDeleteTask, onPress
                                 isFinished={task.isFinished}
                                 onDelete={() => onDeleteTask(task.id)} // Pass the delete function correctly
                                 onEdit={() => onEditTask(task)} // Optional: Ensure edit is implemented
+                                setMoveTaskModalVisible={setMoveTaskModalVisible} // Pass the modal visibility state
                             />
                         ))
                     ) : (

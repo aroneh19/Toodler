@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
@@ -32,7 +31,9 @@ const ListView = ({ route, navigation }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskIsFinished, setNewTaskIsFinished] = useState(false);
-  const [selectedListId, setSelectedListId] = useState(null);
+  const [moveTaskModalVisible, setMoveTaskModalVisible] = useState(false);
+  const [moveTask, setTaskMove] = useState(null);
+
 
   const boardLists = lists.filter((list) => list.boardId === board.id);
   const listIds = boardLists.map((list) => list.id);
@@ -136,6 +137,14 @@ const ListView = ({ route, navigation }) => {
     setNewTaskIsFinished(false);
     };
 
+    const handleMoveTask = (task, targetListId) => {
+      const updatedTasks = tasks.map((t) =>
+        t.id === task.id ? { ...t, listId: targetListId } : t
+      );
+      setTasks(updatedTasks);
+      setMoveTaskModalVisible(false);
+    };
+
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>
@@ -189,6 +198,35 @@ const ListView = ({ route, navigation }) => {
       )}
 
       <BackButton onPress={() => navigation.goBack()} />
+
+      {/* Move Task Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={moveTaskModalVisible}
+        onRequestClose={() => setMoveTaskModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Move Task to Another List</Text>
+            {boardLists.map((list) => (
+              <TouchableOpacity
+                key={list.id}
+                style={styles.dropdownItem}
+                onPress={() => handleMoveTask(taskToMove, list.id)}
+              >
+                <Text style={styles.dropdownItemText}>{list.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => setMoveTaskModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Modal for Adding/Editing List */}
       <Modal
@@ -282,17 +320,7 @@ const ListView = ({ route, navigation }) => {
                 {newTaskIsFinished ? "✔️ Task is finished" : "❌ Task not finished"}
               </Text>
             </TouchableOpacity>
-            
-            {/* Board List Selector (Picker for Task List) */}
-            <Picker
-              selectedValue={selectedListId}
-              onValueChange={(itemValue) => setSelectedListId(itemValue)} // Update selected list
-            >
-              {boardLists.map((list) => (
-                <Picker.Item key={list.id} label={list.name} value={list.id.toString()} />
-              ))}
-            </Picker>
-
+          
             {/* Modal Buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
