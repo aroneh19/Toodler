@@ -18,7 +18,8 @@ export const AppProvider = ({ children }) => {
   const deleteTask = (taskId) => setTasks((prev) => prev.filter((task) => task.id!== taskId));
 
   return (
-    <AppContext.Provider value={{ boards, lists, tasks, addBoard, addList, addTask, deleteBoard, deleteList, deleteTask, setBoards, setLists, setTasks }}>
+    <AppContext.Provider value={{ boards, lists, tasks, addBoard, addList, addTask, deleteBoard, 
+                                  deleteList, deleteTask, setBoards, setLists, setTasks }}>
       {children}
     </AppContext.Provider>
   );

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./ListStyle";
 import Task from "../Task/TaskCard"; // Adjust import path if needed
 
-const List = ({ name, color, onEdit, onDelete, onPress, isExpanded, tasks }) => {
+const List = ({ name, color, onEdit, onEditTask, onDelete, onDeleteTask, onPress, isExpanded, tasks }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -44,7 +44,9 @@ const List = ({ name, color, onEdit, onDelete, onPress, isExpanded, tasks }) => 
                                 key={task.id}
                                 name={task.name}
                                 description={task.description}
-                                done={task.isFinished}
+                                isFinished={task.isFinished}
+                                onDelete={() => onDeleteTask(task.id)} // Pass the delete function correctly
+                                onEdit={() => onEditTask(task)} // Optional: Ensure edit is implemented
                             />
                         ))
                     ) : (
