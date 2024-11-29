@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./TaskStyle";
 
-const Task = ({ name, description, isFinished, onPress, onDelete, onEdit }) => {
+const Task = ({ name, description, isFinished, onTransferTask, onDelete, onEdit }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,7 +10,10 @@ const Task = ({ name, description, isFinished, onPress, onDelete, onEdit }) => {
     };
 
     return (
-        <TouchableOpacity onPress={onPress} style={styles.taskCard}>
+        <TouchableOpacity
+            onPress={onTransferTask}
+            style={styles.taskCard}
+        >
             <View style={styles.leftSection}>
                 <View style={[styles.colorDot, { backgroundColor: isFinished ? '#4caf50' : '#f44336' }]} />
                 <View style={{ flexDirection: 'column', flexShrink: 1 }}>
