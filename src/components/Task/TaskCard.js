@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from "./TaskStyle";
 
-const Task = ({ name, description, isFinished, onPress, onDelete, onEdit }) => {
+const Task = ({ name, description, isFinished, onTransferTask, onDelete, onEdit }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [moveTaskModalVisible, setMoveTaskModalVisible] = useState(false);
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -12,7 +11,7 @@ const Task = ({ name, description, isFinished, onPress, onDelete, onEdit }) => {
 
     return (
         <TouchableOpacity
-            onPress={() => setMoveTaskModalVisible(true)}
+            onPress={onTransferTask}
             style={styles.taskCard}
         >
             <View style={styles.leftSection}>

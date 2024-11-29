@@ -31,9 +31,8 @@ const ListView = ({ route, navigation }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskIsFinished, setNewTaskIsFinished] = useState(false);
-  const [moveTaskModalVisible, setMoveTaskModalVisible] = useState(false);
-  const [moveTask, setTaskMove] = useState(null);
-
+  const [transferModalVisible, setTransferModalVisible] = useState(false);
+  const [taskToTransfer, setTaskToTransfer] = useState(null);
 
   const boardLists = lists.filter((list) => list.boardId === board.id);
   const listIds = boardLists.map((list) => list.id);
@@ -124,6 +123,18 @@ const ListView = ({ route, navigation }) => {
     setExpandedListId(expandedListId === listId ? null : listId);
   };
 
+  const handleTransferTask = (destinationListId) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskToTransfer.id
+        ? { ...task, listId: destinationListId }
+        : task
+    );
+    setTasks(updatedTasks);
+    setTransferModalVisible(false);
+    setTaskToTransfer(null);
+  };
+  
+
   const resetModal = () => {
     setModalVisible(false);
     setEditListId(null);
@@ -135,14 +146,6 @@ const ListView = ({ route, navigation }) => {
     setNewTaskName("");
     setNewTaskDescription("");
     setNewTaskIsFinished(false);
-    };
-
-    const handleMoveTask = (task, targetListId) => {
-      const updatedTasks = tasks.map((t) =>
-        t.id === task.id ? { ...t, listId: targetListId } : t
-      );
-      setTasks(updatedTasks);
-      setMoveTaskModalVisible(false);
     };
 
   return (
@@ -178,6 +181,10 @@ const ListView = ({ route, navigation }) => {
                           setNewTaskIsFinished(task.isFinished);
                           setTaskModalVisible(true);
                         }}
+                        onTransferTask={(task) => {
+                          setTaskToTransfer(task);
+                          setTransferModalVisible(true);
+                        }}
                       />
                   </View>
               );
@@ -199,34 +206,38 @@ const ListView = ({ route, navigation }) => {
 
       <BackButton onPress={() => navigation.goBack()} />
 
-      {/* Move Task Modal */}
+      {/* Modal for Transfering Task to Another List */}
       <Modal
         animationType="slide"
         transparent={true}
-        visible={moveTaskModalVisible}
-        onRequestClose={() => setMoveTaskModalVisible(false)}
+        visible={transferModalVisible}
+        onRequestClose={() => setTransferModalVisible(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Move Task to Another List</Text>
-            {boardLists.map((list) => (
-              <TouchableOpacity
-                key={list.id}
-                style={styles.dropdownItem}
-                onPress={() => handleMoveTask(taskToMove, list.id)}
-              >
-                <Text style={styles.dropdownItemText}>{list.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <Text style={styles.modalTitle}>Transfer Task</Text>
+            <FlatList
+              data={boardLists}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.listOption}
+                  onPress={() => handleTransferTask(item.id)}
+                >
+                  <Text style={styles.listText}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
-              onPress={() => setMoveTaskModalVisible(false)}
+              onPress={() => setTransferModalVisible(false)}
             >
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
 
       {/* Modal for Adding/Editing List */}
       <Modal
