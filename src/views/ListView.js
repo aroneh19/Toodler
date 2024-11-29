@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
@@ -31,6 +32,7 @@ const ListView = ({ route, navigation }) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskIsFinished, setNewTaskIsFinished] = useState(false);
+  const [selectedListId, setSelectedListId] = useState(null);
 
   const boardLists = lists.filter((list) => list.boardId === board.id);
   const listIds = boardLists.map((list) => list.id);
@@ -160,7 +162,7 @@ const ListView = ({ route, navigation }) => {
                         tasks={filteredTasks} // Pass tasks here
                         onDeleteTask={handleDeleteTask}
                         onEditTask={(task) => {
-                          console.log(task)
+                          console.log(boardLists);
                           setEditTaskId(task.id);
                           setNewTaskName(task.name);
                           setNewTaskDescription(task.description);
@@ -254,19 +256,24 @@ const ListView = ({ route, navigation }) => {
             <Text style={styles.modalTitle}>
               {editTaskId ? "Edit Task" : "Add New Task"}
             </Text>
+            
+            {/* Task Name Input */}
             <TextInput
               style={styles.input}
               placeholder="Task Name"
               value={newTaskName}
               onChangeText={setNewTaskName}
-              autoFocus={true}
             />
+            
+            {/* Task Description Input */}
             <TextInput
               style={styles.input}
               placeholder="Task Description"
               value={newTaskDescription}
               onChangeText={setNewTaskDescription}
             />
+            
+            {/* Task Status (isFinished) Selector */}
             <TouchableOpacity
               style={styles.checkboxContainer}
               onPress={() => setNewTaskIsFinished(!newTaskIsFinished)}
@@ -275,15 +282,28 @@ const ListView = ({ route, navigation }) => {
                 {newTaskIsFinished ? "✔️ Task is finished" : "❌ Task not finished"}
               </Text>
             </TouchableOpacity>
+            
+            {/* Board List Selector (Picker for Task List) */}
+            <Picker
+              selectedValue={selectedListId}
+              onValueChange={(itemValue) => setSelectedListId(itemValue)} // Update selected list
+            >
+              {boardLists.map((list) => (
+                <Picker.Item key={list.id} label={list.name} value={list.id.toString()} />
+              ))}
+            </Picker>
+
+            {/* Modal Buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={editTaskId ? handleEditTask : handleAddTask}
               >
                 <Text style={styles.buttonText}>
-                  {editTaskId ? "Save" : "Add"}
+                  {editTaskId ? "Save Task" : "Add Task"}
                 </Text>
               </TouchableOpacity>
+              
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}
                 onPress={resetModal}
@@ -294,6 +314,7 @@ const ListView = ({ route, navigation }) => {
           </View>
         </View>
       </Modal>
+
 
     </View>
   );
