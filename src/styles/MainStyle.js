@@ -77,12 +77,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 25,
         borderRadius: 8,
         alignItems: 'center',
+        backgroundColor: '#0df53e'
     },
     cancelButton: {
         backgroundColor: '#FF5733', // Red for cancel button
     },
     buttonText: {
-        color: '#fff',
+        color: '#1a1919',
         fontWeight: 'bold',
         fontSize: 16,
     },
