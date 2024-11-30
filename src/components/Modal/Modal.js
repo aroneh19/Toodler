@@ -9,7 +9,6 @@ export const CustomModal = ({
                                 onSave,
                                 title,
                                 inputs = [],
-                                setInputs = [],
                                 onImageSelected,
                                 saveButtonText = 'Save',
                                 cancelButtonText = 'Cancel',
@@ -60,7 +59,7 @@ export const CustomModal = ({
                             placeholder={inputValue.placeholder}
                             placeholderTextColor="#888888"
                             value={inputValue.value}
-                            onChangeText={(text) => setInputs[index](text)}
+                            onChangeText={(text) => inputs[index].setValue(text)}
                         />
                     ))}
 
