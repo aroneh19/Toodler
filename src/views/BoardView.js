@@ -5,7 +5,7 @@ import BackButton from "../components/BackButton/BackButton";
 import { AddBoardButton } from "../components/AddButton/AddButton";
 import { CustomModal } from "../components/Modal/Modal";
 
-import styles from "./Styles/MainStyle";
+import styles from "../styles/MainStyle";
 import { useAppContext } from "../context/AppContext";
 
 const BoardView = ({ route, navigation }) => {
