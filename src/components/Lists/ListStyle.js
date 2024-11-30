@@ -43,11 +43,14 @@ export const styles = StyleSheet.create({
       expandedContent: {
         marginTop: 10,
         padding: 10,
-        backgroundColor: '#e6e6e6',
-        borderRadius: 8,
+        backgroundColor: '#e6e6e6',        alignItems: 'center',
+
+          borderRadius: 8,
       },
       expandedText: {
-        fontSize: 16,
-        color: '#555',
-      },      
+          fontWeight: 'bold',
+          fontSize: 16,
+          color: '#282828',
+          textAlign: "center",
+      },
 });

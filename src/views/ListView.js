@@ -133,7 +133,7 @@ const ListView = ({ route, navigation }) => {
     setTransferModalVisible(false);
     setTaskToTransfer(null);
   };
-  
+
 
   const resetModal = () => {
     setModalVisible(false);
@@ -205,7 +205,7 @@ const ListView = ({ route, navigation }) => {
 
       <BackButton onPress={() => navigation.goBack()} />
 
-      {/* Modal for Transfering Task to Another List */}
+      {/* Modal for Transferring Task to Another List */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -304,7 +304,7 @@ const ListView = ({ route, navigation }) => {
             <Text style={styles.modalTitle}>
               {editTaskId ? "Edit Task" : "Add New Task"}
             </Text>
-            
+
             {/* Task Name Input */}
             <TextInput
               style={styles.input}
@@ -312,7 +312,7 @@ const ListView = ({ route, navigation }) => {
               value={newTaskName}
               onChangeText={setNewTaskName}
             />
-            
+
             {/* Task Description Input */}
             <TextInput
               style={styles.input}
@@ -320,7 +320,7 @@ const ListView = ({ route, navigation }) => {
               value={newTaskDescription}
               onChangeText={setNewTaskDescription}
             />
-            
+
             {/* Task Status (isFinished) Selector */}
             <TouchableOpacity
               style={styles.checkboxContainer}
@@ -330,7 +330,7 @@ const ListView = ({ route, navigation }) => {
                 {newTaskIsFinished ? "✔️ Task is finished" : "❌ Task not finished"}
               </Text>
             </TouchableOpacity>
-          
+
             {/* Modal Buttons */}
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -341,7 +341,7 @@ const ListView = ({ route, navigation }) => {
                   {editTaskId ? "Save Task" : "Add Task"}
                 </Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={[styles.button, styles.cancelButton]}
                 onPress={resetModal}
