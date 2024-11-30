@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, Image } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { requestMediaLibraryPermissionsAsync, launchImageLibraryAsync, MediaType } from 'expo-image-picker';
 import { styles } from './ModalStyle';
 
 export const CustomModal = ({
@@ -22,14 +22,14 @@ export const CustomModal = ({
         }
     }, [visible]);
     const handleSelectImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status } = await requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             Alert.alert('Permission required', 'Camera roll permissions are required to select an image.');
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        const result = await launchImageLibraryAsync({
+            mediaTypes: MediaType,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,

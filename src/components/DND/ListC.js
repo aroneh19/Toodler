@@ -19,12 +19,10 @@ const List = ({ list, onDragStart, onDragEnd}) => {
     };
 
     const onLongPressDrag = (taskId) => {
-        //console.log(`Started dragging task with ID: ${taskId}`);
         setDraggedTaskId(taskId); // Track which task is being dragged
     };
 
     const handleDrop = (taskId) => {
-        //console.log("TOD")
     };
 
     const handleLayout = (event) => {
