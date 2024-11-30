@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Modal, TextInput, Alert } from "react-native";
+import React, { useState } from "react";
+import { View, Text, FlatList, Alert } from "react-native";
 import Board from "../components/BoardView/BoardCard";
 import BackButton from "../components/BackButton/BackButton";
 import { AddBoardButton } from "../components/AddButton/AddButton";
 import { CustomModal } from "../components/Modal/Modal";
 
-import styles from "./Styles/MainStyle";
+import styles from "../styles/MainStyle";
 import { useAppContext } from "../context/AppContext";
-
-const DUMMY_PHOTO =
-	"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
 
 const BoardView = ({ route, navigation }) => {
 	const { boards, addBoard, deleteBoard, setBoards } = useAppContext();
@@ -34,8 +31,8 @@ const BoardView = ({ route, navigation }) => {
 		const newBoardId = boards.length + 1;
 		const newBoard = {
 			id: newBoardId,
-			name: newBoardName || `New Board ${newBoardId}`,
-			thumbnailPhoto: newBoardImage || DUMMY_PHOTO,
+			name: newBoardName,
+			thumbnailPhoto: newBoardImage,
 		};
 
 		addBoard(newBoard);
