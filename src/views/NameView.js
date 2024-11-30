@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import InputField from "../components/InputField/InputBox";
-import styles from "./Styles/NameInputStyle";
+import styles from "../styles/NameInputStyle";
 
 const NameInputView = ({ navigation }) => {
 	const [name, setName] = useState("");

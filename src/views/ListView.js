@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { useAppContext } from "../context/AppContext";
-import styles from "./Styles/MainStyle";
+import styles from "../styles/MainStyle";
 import List from "../components/Lists/ListCard";
 import { AddListButton, AddTaskButton } from "../components/AddButton/AddButton";
 import BackButton from "../components/BackButton/BackButton";
