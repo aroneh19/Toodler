@@ -24,18 +24,21 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
     },
     modalContent: {
-        width: '85%',
-        backgroundColor: '#2c2c2c', // Dark background for modal
-        borderRadius: 10,
+        width: '90%',
+        backgroundColor: '#fff',
+        borderRadius: 12,
         padding: 20,
-        elevation: 5,
-        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 6,
     },
     modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#fff',
-        marginBottom: 20,
+        color: '#333',
+        marginBottom: 15,
         textAlign: 'center',
     },
     input: {
@@ -62,26 +65,27 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#fff', // White border
     },
-    
+
     modalButtons: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 10,
     },
     button: {
-        flex: 1,
-        paddingVertical: 10,
-        marginHorizontal: 5,
-        backgroundColor: '#007BFF',
-        borderRadius: 5,
+        marginTop: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 8,
         alignItems: 'center',
+        backgroundColor: '#0df53e'
     },
     cancelButton: {
         backgroundColor: '#FF5733', // Red for cancel button
     },
     buttonText: {
-        color: '#fff',
+        color: '#1a1919',
         fontWeight: 'bold',
+        fontSize: 16,
     },
     // Add this to your styles
     taskContainer: {
@@ -91,8 +95,22 @@ const styles = StyleSheet.create({
     taskText: {
         fontSize: 14,
         color: "#555",
+    }, listOption: {
+        padding: 15,
+        marginVertical: 8,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 8,
+        borderColor: '#ddd',
+        borderWidth: 1,
     },
-  
+    listText: {
+        textAlign: "center",
+        fontSize: 16,
+        color: '#555',
+        fontWeight: "bold",
+    }
+
+
 });
 
 export default styles;

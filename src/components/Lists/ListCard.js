@@ -26,12 +26,12 @@ const List = ({ name, color, onEdit, onEditTask, onDelete, onDeleteTask, onPress
             </View>
 
             {dropdownVisible && (
-                <View style={styles.dropdownMenu}>
-                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onEdit(); }}>
-                        <Text style={styles.dropdownItemText}>Edit</Text>
+                <View style={styles.expandedListCard}>
+                    <TouchableOpacity style={styles.expandedContent} onPress={() => { toggleDropdown(); onEdit(); }}>
+                        <Text style={styles.expandedText}>Edit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.dropdownItem} onPress={() => { toggleDropdown(); onDelete(); }}>
-                        <Text style={styles.dropdownItemText}>Delete</Text>
+                    <TouchableOpacity style={styles.expandedContent} onPress={() => { toggleDropdown(); onDelete(); }}>
+                        <Text style={styles.expandedText}>Delete</Text>
                     </TouchableOpacity>
                 </View>
             )}

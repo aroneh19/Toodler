@@ -72,13 +72,13 @@ export const styles = StyleSheet.create({
       alignSelf: 'flex-end',
     },
     dropdownButtonText: {
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: 'bold',
     },
     dropdownMenu: {
       position: 'absolute',
       top: 30, // Adjust as needed to match the dropdown button's height
-      right: 0, // Aligns to the right edge of the button
+      right: 35, // Aligns to the right edge of the button
       backgroundColor: '#fff',
       borderRadius: 8,
       borderWidth: 1,
@@ -92,5 +92,6 @@ export const styles = StyleSheet.create({
     dropdownItemText: {
         fontSize: 14,
         color: '#333',
-    },  
+        fontWeight: "bold"
+    },
 });
