@@ -174,7 +174,6 @@ const ListView = ({ route, navigation }) => {
                         tasks={filteredTasks} // Pass tasks here
                         onDeleteTask={handleDeleteTask}
                         onEditTask={(task) => {
-                          console.log(boardLists);
                           setEditTaskId(task.id);
                           setNewTaskName(task.name);
                           setNewTaskDescription(task.description);

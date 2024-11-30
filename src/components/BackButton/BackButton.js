@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import {styles} from './BackButtStyle';
 
 const BackButton = ({ onPress }) => {
