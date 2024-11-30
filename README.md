@@ -73,9 +73,9 @@ Toodler simplifies task management using a Kanban-based workflow. Users can crea
 - **OS Version**: [iOS 16.5/Android 13]
 
 ### Secondary Platform Testing
-- **Platform**: [iOS/Android]
-- **Test Device**: [iPhone 13/Google Pixel 6]
-- **OS Version**: [iOS 16.2/Android 12]
+- **Platform**: [iOS]
+- **Test Device**: [iPhone 14 Pro]
+- **OS Version**: [iOS 18.0]
 - **Testing Status**: [Limited/Partial/Comprehensive]
 
 ---
