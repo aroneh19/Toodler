@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Modal, TextInput, Alert } from "react-native";
+import React, { useState} from "react";
+import { View, Text, FlatList, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import Board from "../components/BoardView/BoardCard";
 import BackButton from "../components/BackButton/BackButton";
 import { AddBoardButton } from "../components/AddButton/AddButton";
 import { CustomModal } from "../components/Modal/Modal";
-
 import styles from "./Styles/MainStyle";
 import { useAppContext } from "../context/AppContext";
+import { format } from "date-fns";
 
 const DUMMY_PHOTO =
 	"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Dollarnote_siegel_hq.jpg/640px-Dollarnote_siegel_hq.jpg";
@@ -16,18 +16,16 @@ const BoardView = ({ route, navigation }) => {
 	const { userName } = route.params || {};
 
 	const [isModalVisible, setModalVisible] = useState(false);
-	const [editBoardId, setEditBoardId] = useState(null); // Track the board being edited
+	const [editBoardId, setEditBoardId] = useState(null);
 	const [newBoardName, setNewBoardName] = useState("");
 	const [newBoardImage, setNewBoardImage] = useState("");
 
 	const handleAddBoard = () => {
 		if (!newBoardName.trim()) {
-			// Check if the name is empty or only whitespace
 			Alert.alert("Error", "Board name is required!");
 			return;
 		}
 		if (!newBoardImage) {
-			// Check if the name is empty or only whitespace
 			Alert.alert("Error", "A Photo is required!");
 			return;
 		}
@@ -68,12 +66,28 @@ const BoardView = ({ route, navigation }) => {
 		setNewBoardImage("");
 	};
 
+	const currentDate = format(new Date(), "EEE, dd MMMM"); // Example: "Wed, 20 July"
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.greeting}>
-				Hi, <Text style={styles.userName}>{userName}</Text>!
-			</Text>
-
+			{/* Header Section */}
+			<View style={styles.header}>
+				<View>
+					<Text style={styles.greeting}>
+						Hi, <Text style={styles.userName}>{userName || "User"}</Text>!
+					</Text>
+					<Text style={styles.date}>{currentDate}</Text>
+				</View>
+				{/* Add Button */}
+				<TouchableOpacity
+					style={styles.addButton}
+					onPress={() => setModalVisible(true)}
+				>
+					<Text style={styles.addButtonText}>+</Text>
+				</TouchableOpacity>
+			</View>
+	
+			{/* Board List */}
 			<FlatList
 				data={boards}
 				renderItem={({ item }) => (
@@ -98,9 +112,8 @@ const BoardView = ({ route, navigation }) => {
 				numColumns={2}
 				contentContainerStyle={styles.boardContainer}
 			/>
-
-			<AddBoardButton onPress={() => setModalVisible(true)} />
-
+	
+			{/* Modal */}
 			<CustomModal
 				visible={isModalVisible}
 				onClose={resetModal}
@@ -113,13 +126,17 @@ const BoardView = ({ route, navigation }) => {
 						setValue: setNewBoardName,
 					},
 				]}
-				setInputs={[setNewBoardName]}
 				onImageSelected={setNewBoardImage}
 			/>
-
-			<BackButton onPress={() => navigation.goBack()} />
+	
+			{/* Back Button Footer */}
+			<View style={styles.footer}>
+				<BackButton onPress={() => navigation.goBack()} />
+			</View>
 		</View>
 	);
+	
+	
 };
 
 export default BoardView;

@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between', // Ensures items on the left and right are spaced apart
+        justifyContent: 'space-between',
     },
     leftSection: {
         flexDirection: 'row',
